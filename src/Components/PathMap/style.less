@@ -1,0 +1,15 @@
+@import '~style/deviceSize.less';
+
+.map-container {
+  height: 900px;
+
+  @media @mobile {
+    & {
+      height: 400px;
+    }
+  }
+
+  @media @tablet {
+    height: 600px;
+  }
+}

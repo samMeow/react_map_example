@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./node_modules/webpack-dev-server/bin/webpack-dev-server.js",
-    "lint": "eslint src --quiet && stylelint \"src/**/*.less\" ",
+    "lint": "eslint src && flow && stylelint \"src/**/*.less\" ",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -23,7 +23,9 @@
     "prop-types": "^15.6.0",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
+    "react-google-maps": "^9.0.2",
     "react-redux": "^5.0.6",
+    "recompose": "^0.26.0",
     "redux": "^3.7.2",
     "redux-promise-middleware": "^4.4.1",
     "redux-thunk": "^2.2.0",

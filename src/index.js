@@ -3,6 +3,8 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 
+import './style/clear.less'
+
 import ConfigableStore from './Store/index'
 import App from './Containers/App'
 

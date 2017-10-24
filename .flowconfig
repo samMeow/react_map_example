@@ -3,5 +3,14 @@
 [include]
 
 [libs]
+./node_modules/stylelint/decls
 
 [options]
+module.system.node.resolve_dirname=src
+module.system.node.resolve_dirname=node_modules
+module.name_mapper='.*\(.less\)' -> 'empty/object'
+module.file_ext=.js
+module.file_ext=.json
+module.file_ext=.jsx
+module.file_ext=.css
+module.file_ext=.less
