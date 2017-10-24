@@ -8,8 +8,9 @@ import {
 } from 'react-google-maps'
 
 import { GeoLocationType } from 'Constants/proptypes'
+import { HongKongLocaction, googleMapApiUrl } from 'Constants/googlemap'
 
-import './style.less'
+import './MapComponent.less'
 
 class MapComponent extends Component {
   static propTypes = {
@@ -20,7 +21,7 @@ class MapComponent extends Component {
 
   static defaultProps = {
     defaultZoom: 11,
-    defaultCenter: { lat: 22.2855, lng: 114.1577 },
+    defaultCenter: HongKongLocaction,
     children: (<div />),
   }
 
@@ -40,8 +41,7 @@ class MapComponent extends Component {
 
 export default compose(
   withProps({
-    googleMapURL: 'https://maps.googleapis.com/maps/api/js' +
-      '?v=3.exp&libraries=geometry,drawing,places',
+    googleMapURL: googleMapApiUrl,
     loadingElement: <div style={{ height: '100%' }} />,
     containerElement: <div className="map-container" />,
     mapElement: <div style={{ height: '100%' }} />,

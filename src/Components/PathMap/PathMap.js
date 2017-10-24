@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 import { GeoLocationType } from 'Constants/proptypes'
 
-import MapComponent from './MapComponent'
+import MapComponent from './components/MapComponent'
 
 export default class PathMap extends Component {
   static propTypes = {

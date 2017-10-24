@@ -1,0 +1,39 @@
+.location-input-container {
+  text-align: left;
+  font-size: 22px;
+  margin: 15px 0;
+
+  .location-input-title {
+    display: block;
+    margin: 0 5px;
+  }
+
+  .location-input {
+    width: 90%;
+    outline: none;
+    margin: 0;
+    height: 40px;
+    border: 1px solid black;
+    border-radius: 3px;
+    padding: 0 12px;
+    overflow: hidden;
+  }
+
+  .location-input:focus {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  }
+
+  &.error .location-input {
+    border-color: red;
+  }
+
+  .error-message {
+    color: red;
+    display: none;
+    font-size: 14px;
+  }
+
+  &.error .error-message {
+    display: block;
+  }
+}
