@@ -1,0 +1,87 @@
+{
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es6": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:flowtype/recommended",
+        "plugin:react/recommended",
+        "airbnb"
+    ],
+    "parser": "babel-eslint",
+    "parserOptions": {
+        "ecmaFeatures": {
+            "experimentalObjectRestSpread": true,
+            "jsx": true
+        },
+        "sourceType": "module"
+    },
+    "plugins": [
+        "react",
+        "flowtype",
+        "jsx-max-len"
+    ],
+    "rules": {
+        "max-len": [   
+            "error",
+            {"code": 80}
+        ],
+        "complexity":[
+            "error",
+            {"max": 10}
+        ],
+        "react/jsx-uses-vars": 2,
+        "indent": [
+            "error",
+            2
+        ],
+        "linebreak-style": [
+            "error",
+            "unix"
+        ],
+        "quotes": [
+            "error",
+            "single"
+        ],
+        "semi": [
+            "error",
+            "never"
+        ],
+        "import/no-extraneous-dependencies": [
+            "error",
+            {
+                "devDependencies": ["**/*test.js", "**/*spec.js*"]
+            }
+        ],
+        "react/jsx-filename-extension": [
+            1,
+            { 
+                "extensions": [".js", ".jsx"] 
+            }
+        ],
+        "jsx-max-len/jsx-max-len": [
+            2,
+            {
+                "lineMaxLength": 100,
+                "maxAttributesPerLine": 1
+            }
+        ]
+    },
+    "settings": {
+        "flowtype": {
+            "onlyFilesWithFlowAnnotation": true
+        },
+        "import": {
+            "webpack": {
+                "config": "webpack.config.js"
+            }
+        },
+        "import/resolver": {
+            "node": {
+                "paths": ["src"]
+            }
+        }
+    }
+}
