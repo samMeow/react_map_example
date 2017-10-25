@@ -14,6 +14,7 @@ export default class LocationForm extends Component {
       addDropoff: PropTypes.func.isRequired,
       removeDropoff: PropTypes.func.isRequired,
       changeStartPlace: PropTypes.func.isRequired,
+      reset: PropTypes.func.isRequired,
     }).isRequired,
     startPlace: PlaceType.isRequired,
     dropoffs: PropTypes.arrayOf(PlaceType).isRequired,
@@ -31,6 +32,11 @@ export default class LocationForm extends Component {
   onDropPointChange = (place) => {
     const { actions } = this.props
     actions.addDropoff(place)
+  }
+
+  onResetBtnClick = () => {
+    const { actions } = this.props
+    actions.reset()
   }
 
   render() {
@@ -56,6 +62,7 @@ export default class LocationForm extends Component {
             <button
               type="button"
               className="button alert small-6"
+              onClick={this.onResetBtnClick}
             >
               Reset
             </button>

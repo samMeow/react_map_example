@@ -22,11 +22,25 @@
     }
 
     .location-list-block-content {
-      text-indent: 10px;
       min-height: 30px;
+
+      > span {
+        padding-left: 10px;
+        display: inline-block;
+      }
     }
 
     @media @tablet {
+      & {
+        border-left: 1px solid black;
+      }
+
+      &:first-child {
+        border: none;
+      }
+    }
+
+    @media @mobile {
       & {
         border-left: 1px solid black;
       }

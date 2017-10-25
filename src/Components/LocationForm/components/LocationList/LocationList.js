@@ -45,7 +45,7 @@ export default class LocationList extends Component {
         <div className="small-6 large-12 location-list-block">
           <div className="location-list-block-header">Start Place</div>
           <div className="location-list-block-content">
-            {startPlace.name}
+            <span>{startPlace.name}</span>
           </div>
         </div>
         <div className="small-6 large-12 location-list-block">

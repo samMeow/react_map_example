@@ -16,6 +16,7 @@ class MapComponent extends Component {
   static propTypes = {
     defaultZoom: PropTypes.number,
     defaultCenter: GeoLocationType,
+    center: GeoLocationType.isRequired,
     children: PropTypes.node,
   }
 
@@ -26,11 +27,17 @@ class MapComponent extends Component {
   }
 
   render() {
-    const { defaultZoom, defaultCenter, children } = this.props
+    const {
+      defaultZoom,
+      defaultCenter,
+      children,
+      center,
+    } = this.props
     return (
       <GoogleMap
         defaultZoom={defaultZoom}
         defaultCenter={defaultCenter}
+        center={center}
       >
         {children}
       </GoogleMap>

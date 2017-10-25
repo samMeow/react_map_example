@@ -17,6 +17,7 @@ class App extends Component {
       addDropoff: PropTypes.func.isRequired,
       removeDropoff: PropTypes.func.isRequired,
       changeStartPlace: PropTypes.func.isRequired,
+      reset: PropTypes.func.isRequired,
     }).isRequired,
     startPlace: PlaceType.isRequired,
     dropoffs: PropTypes.arrayOf(PlaceType).isRequired,
@@ -35,12 +36,14 @@ class App extends Component {
               addDropoff: actions.addDropoff,
               removeDropoff: actions.removeDropoff,
               changeStartPlace: actions.changeStartPlace,
+              reset: actions.reset,
             }}
           />
         </div>
         <div className="small-12 medium-12 large-9">
           <PathMap
             path={[]}
+            places={[startPlace, ...dropoffs]}
           />
         </div>
       </div>
@@ -58,6 +61,7 @@ const mapDispathToProps = dispath => ({
     changeStartPlace: pathMapActions.changeStartPlace,
     addDropoff: pathMapActions.addDropoff,
     removeDropoff: pathMapActions.removeDropoff,
+    reset: pathMapActions.reset,
   }, dispath),
 })
 

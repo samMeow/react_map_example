@@ -1,3 +1,4 @@
+/* global google */
 import React, { PureComponent } from 'react'
 import { compose, withProps } from 'recompose'
 import PropTypes from 'prop-types'
@@ -5,7 +6,7 @@ import { withScriptjs } from 'react-google-maps'
 import classnames from 'classnames'
 import StandaloneSearchBox from 'react-google-maps/lib/components/places/StandaloneSearchBox'
 
-import { googleMapApiUrl } from 'Constants/googlemap'
+import { googleMapApiUrl, HongKongLatLngBound } from 'Constants/googlemap'
 
 import './LocationInput.less'
 
@@ -29,6 +30,7 @@ class LocationInput extends PureComponent {
 
   onSearchBoxMounted = (ref) => {
     this.searchBoxRef = ref
+    
   }
 
   onInputMount = (ref) => {
@@ -38,6 +40,7 @@ class LocationInput extends PureComponent {
   onPlaceChange = () => {
     const { onChange } = this.props
     const places = this.searchBoxRef.getPlaces()
+    console.log(this.searchBoxRef.getBounds())
     if (this.validate(places)) {
       const {
         formatted_address,
@@ -79,6 +82,14 @@ class LocationInput extends PureComponent {
           <StandaloneSearchBox
             ref={this.onSearchBoxMounted}
             onPlacesChanged={this.onPlaceChange}
+            defaultBpunds={new google.maps.LatLngBounds(
+              HongKongLatLngBound.sw,
+              HongKongLatLngBound.ne,
+            )}
+            bounds={new google.maps.LatLngBounds(
+              HongKongLatLngBound.sw,
+              HongKongLatLngBound.ne,
+            )}
           >
             <input
               id={name}
