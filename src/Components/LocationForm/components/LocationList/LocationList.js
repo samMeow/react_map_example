@@ -7,13 +7,14 @@ import './LocationList.less'
 
 export default class LocationList extends Component {
   static propTypes = {
+    removeDropoff: PropTypes.func.isRequired,
     startPlace: PlaceType.isRequired,
     dropoffs: PropTypes.arrayOf(PlaceType).isRequired,
   }
 
   onCrossClick = id => () => {
-    // TODO: remove the dropoffs
-    console.log(id)
+    const { removeDropoff } = this.props
+    removeDropoff(id)
   }
 
   renderDropOffList = () => {

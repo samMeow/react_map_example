@@ -46,6 +46,9 @@
 
     .location-list-block-dropoff-list-item {
       line-height: 30px;
+      text-indent: 0;
+      padding-left: 20px;
+      position: relative;
     }
 
     @media @tablet {
@@ -63,11 +66,12 @@
 
   .cross-icon {
     background-image: url('/img/cross.svg');
-    width: 8px;
-    height: 8px;
-    display: inline-block;
-    margin-right: 5px;
+    width: 12px;
+    height: 12px;
     outline: none;
+    position: absolute;
+    top: 10px;
+    left: 2px;
     cursor: pointer;
   }
 }

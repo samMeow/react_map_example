@@ -10,6 +10,11 @@ import './LocationForm.less'
 
 export default class LocationForm extends Component {
   static propTypes = {
+    actions: PropTypes.shape({
+      addDropoff: PropTypes.func.isRequired,
+      removeDropoff: PropTypes.func.isRequired,
+      changeStartPlace: PropTypes.func.isRequired,
+    }).isRequired,
     startPlace: PlaceType.isRequired,
     dropoffs: PropTypes.arrayOf(PlaceType).isRequired,
   }
@@ -19,15 +24,17 @@ export default class LocationForm extends Component {
   }
 
   onStartPointChange = (place) => {
-    console.log(place)
+    const { actions } = this.props
+    actions.changeStartPlace(place)
   }
 
   onDropPointChange = (place) => {
-    console.log(place)
+    const { actions } = this.props
+    actions.addDropoff(place)
   }
 
   render() {
-    const { startPlace, dropoffs } = this.props
+    const { startPlace, dropoffs, actions } = this.props
     return (
       <div>
         <form className="location-form grid-x align-center" onSubmit={this.onSubmit}>
@@ -63,6 +70,7 @@ export default class LocationForm extends Component {
         <LocationList
           startPlace={startPlace}
           dropoffs={dropoffs}
+          removeDropoff={actions.removeDropoff}
         />
       </div>
     )
