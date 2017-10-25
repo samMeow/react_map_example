@@ -39,14 +39,19 @@ class LocationInput extends PureComponent {
     const { onChange } = this.props
     const places = this.searchBoxRef.getPlaces()
     if (this.validate(places)) {
-      const { formatted_address, place_id, geometry: { location } } = places[0]
+      const {
+        formatted_address,
+        place_id: placeId,
+        geometry: { location },
+      } = places[0]
       onChange({
         name: formatted_address,
         location: {
           lat: location.lat(),
           lng: location.lng(),
         },
-        id: place_id,
+        placeId,
+        id: placeId + Date.now(),
       })
       this.resetValue()
     } else {

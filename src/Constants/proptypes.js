@@ -5,6 +5,13 @@ export const GeoLocationType = PropTypes.shape({
   lng: PropTypes.number.isRequired,
 })
 
+export const PlaceType = PropTypes.shape({
+  id: PropTypes.string.isRequired,
+  placeId: PropTypes.string.isRequired,
+  location: GeoLocationType.isRequired,
+  name: PropTypes.string.isRequired,
+})
+
 
 export default {
   GeoLocationType,

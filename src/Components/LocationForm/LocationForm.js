@@ -1,11 +1,19 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
-import LocationInput from './components/LocationInput'
+import { PlaceType } from 'Constants/proptypes'
+
 import LocationInput from './components/LocationInput/LocationInput'
+import LocationList from './components/LocationList/LocationList'
 
 import './LocationForm.less'
 
 export default class LocationForm extends Component {
+  static propTypes = {
+    startPlace: PlaceType.isRequired,
+    dropoffs: PropTypes.arrayOf(PlaceType).isRequired,
+  }
+
   onSubmit = (e) => {
     e.preventDefault()
   }
@@ -19,9 +27,10 @@ export default class LocationForm extends Component {
   }
 
   render() {
+    const { startPlace, dropoffs } = this.props
     return (
       <div>
-        <form className="location-form grid-x" onSubmit={this.onSubmit}>
+        <form className="location-form grid-x align-center" onSubmit={this.onSubmit}>
           <div className="small-6 large-12">
             <LocationInput
               title="Start"
@@ -36,7 +45,25 @@ export default class LocationForm extends Component {
               onChange={this.onDropPointChange}
             />
           </div>
+          <div className="grid-x small-12 medium-6 large-12 text-center">
+            <button
+              type="button"
+              className="button alert small-6"
+            >
+              Reset
+            </button>
+            <button
+              type="submit"
+              className="button small-6"
+            >
+              Search
+            </button>
+          </div>
         </form>
+        <LocationList
+          startPlace={startPlace}
+          dropoffs={dropoffs}
+        />
       </div>
     )
   }

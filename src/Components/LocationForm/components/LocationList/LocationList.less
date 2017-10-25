@@ -1,0 +1,73 @@
+@import '~style/deviceSize.less';
+
+.location-list {
+  margin: 20px 40px;
+  background-color: #fafafa;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+
+  @media @mobile {
+    & {
+      margin: 10px;
+    }
+  }
+
+  .location-list-block {
+    .location-list-block-header {
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+      line-height: 40px;
+      border-top: 1px solid black;
+      border-bottom: 1px solid black;
+    }
+
+    .location-list-block-content {
+      text-indent: 10px;
+      min-height: 30px;
+    }
+
+    @media @tablet {
+      & {
+        border-left: 1px solid black;
+      }
+
+      &:first-child {
+        border: none;
+      }
+    }
+  }
+
+  .location-list-block-dropoff-list {
+    list-style: none;
+    margin-top: 10px;
+    margin-left: 5px;
+    overflow-y: scroll;
+    height: 480px;
+
+    .location-list-block-dropoff-list-item {
+      line-height: 30px;
+    }
+
+    @media @tablet {
+      & {
+        height: 150px;
+      }
+    }
+
+    @media @mobile {
+      & {
+        height: 100px;
+      }
+    }
+  }
+
+  .cross-icon {
+    background-image: url('/img/cross.svg');
+    width: 8px;
+    height: 8px;
+    display: inline-block;
+    margin-right: 5px;
+    outline: none;
+    cursor: pointer;
+  }
+}
