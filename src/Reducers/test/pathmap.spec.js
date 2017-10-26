@@ -19,7 +19,7 @@ test(
     Handlers,
     { },
     Creators.changeStartPlace(mockPlace),
-    { startPlace: mockPlace },
+    { startPlace: mockPlace, cache: {} },
   ),
 )
 
@@ -29,7 +29,7 @@ test(
     Handlers,
     { dropoffs: [] },
     Creators.addDropoff(mockPlace),
-    { dropoffs: [mockPlace] },
+    { dropoffs: [mockPlace], cache: {} },
   ),
 )
 
@@ -39,7 +39,7 @@ test(
     Handlers,
     { dropoffs: [{ id: 'a' }, { id: 'b' }] },
     Creators.removeDropoff('a'),
-    { dropoffs: [{ id: 'b' }] },
+    { dropoffs: [{ id: 'b' }], cache: {} },
   ),
 )
 
@@ -79,7 +79,7 @@ test(
     Handlers,
     { requesting: true },
     { type: `${Types.ASK_FOR_PATH}_${FULFILLED}`, payload: { token: 'abc' } },
-    { requesting: false, token: 'abc' },
+    { requesting: true, cache: { token: 'abc' } },
   ),
 )
 
@@ -89,6 +89,72 @@ test(
     Handlers,
     { requesting: true },
     { type: `${Types.ASK_FOR_PATH}_${REJECTED}` },
+    {
+      requesting: false,
+      error: true,
+      errorMsg: 'An unexpected error occur. Please try again later',
+    },
+  ),
+)
+
+test(
+  'getRouteByTokenSuccess success reduce',
+  reducerTest(
+    Handlers,
+    { requesting: true, cache: {} },
+    {
+      type: `${Types.GET_ROUTE_BY_TOKEN}_${FULFILLED}`,
+      payload: { status: 'success', path: '123' },
+    },
+    {
+      requesting: false,
+      cache: {
+        path: '123',
+      },
+    },
+  ),
+)
+
+test(
+  'getRouteByTokenSuccess failure reduce',
+  reducerTest(
+    Handlers,
+    { requesting: true },
+    {
+      type: `${Types.GET_ROUTE_BY_TOKEN}_${FULFILLED}`,
+      payload: { status: 'failure', error: 'getRouteByTokenSuccess failure reduce' },
+    },
+    {
+      requesting: false,
+      error: true,
+      errorMsg: 'getRouteByTokenSuccess failure reduce',
+    },
+  ),
+)
+
+test(
+  'getRouteByTokenSuccess in progress reduce',
+  reducerTest(
+    Handlers,
+    { requesting: true },
+    {
+      type: `${Types.GET_ROUTE_BY_TOKEN}_${FULFILLED}`,
+      payload: { status: 'in progress' },
+    },
+    {
+      requesting: false,
+      error: true,
+      errorMsg: 'Server is busy. Please try again later',
+    },
+  ),
+)
+
+test(
+  'getRouteByTokenError reduce',
+  reducerTest(
+    Handlers,
+    { requesting: true },
+    { type: `${Types.GET_ROUTE_BY_TOKEN}_${REJECTED}` },
     {
       requesting: false,
       error: true,

@@ -18,7 +18,9 @@ export const INIT_STATE = {
   requesting: false,
   error: false,
   errorMsg: '',
-  token: null,
+  cache: {
+    token: null,
+  },
 }
 
 // ====== reducer ======
@@ -27,11 +29,13 @@ const reset = () => INIT_STATE
 const changeStartPlace = (state, { place }) => ({
   ...state,
   startPlace: place,
+  cache: {},
 })
 
 const addDropoff = (state, { place }) => ({
   ...state,
   dropoffs: [...state.dropoffs, place],
+  cache: {},
 })
 
 const removeDropoff = (state, { id }) => {
@@ -39,6 +43,7 @@ const removeDropoff = (state, { id }) => {
   return {
     ...state,
     dropoffs: filteredDropoff,
+    cache: {},
   }
 }
 
@@ -55,11 +60,49 @@ const askForPathPending = state => ({
 
 const askForPathSuccess = (state, { payload }) => ({
   ...state,
-  requesting: false, // TODO: should be false until we draw the path
-  token: payload.token, // debug purpose
+  cache: {
+    token: payload.token,
+  },
 })
 
 const askForPathError = state => ({
+  ...state,
+  requesting: false,
+  error: true,
+  errorMsg: 'An unexpected error occur. Please try again later',
+})
+
+const getRouteByTokenSuccess = (state, { payload }) => {
+  const { status } = payload
+  let newState = {}
+  switch (status) {
+  case 'success':
+    newState = { // TODO: should be still requesting until draw map
+      requesting: false,
+      cache: { ...state.cache, path: payload.path },
+    }
+    break
+  case 'in progress':
+    newState = {
+      requesting: false,
+      error: true,
+      errorMsg: 'Server is busy. Please try again later',
+    }
+    break
+  case 'failure':
+  default:
+    newState = {
+      requesting: false,
+      error: true,
+      errorMsg: payload.error,
+    }
+    break
+  }
+
+  return { ...state, ...newState }
+}
+
+const getRouteByTokenError = state => ({
   ...state,
   requesting: false,
   error: true,
@@ -75,6 +118,8 @@ const Handlers = createReducer(INIT_STATE, {
   [`${pathmapTypes.ASK_FOR_PATH}_${PENDING}`]: askForPathPending,
   [`${pathmapTypes.ASK_FOR_PATH}_${FULFILLED}`]: askForPathSuccess,
   [`${pathmapTypes.ASK_FOR_PATH}_${REJECTED}`]: askForPathError,
+  [`${pathmapTypes.GET_ROUTE_BY_TOKEN}_${FULFILLED}`]: getRouteByTokenSuccess,
+  [`${pathmapTypes.GET_ROUTE_BY_TOKEN}_${REJECTED}`]: getRouteByTokenError,
 })
 
 export default Handlers

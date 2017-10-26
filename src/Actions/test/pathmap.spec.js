@@ -8,6 +8,16 @@ import nock from 'nock'
 
 import { Types, Creators } from '../pathmap'
 
+const storefunc = configureStore([reduxPromise(), reduxThunk])
+
+test.before(() => {
+  process.env.API_URL = 'http://127.0.0.1:8080'
+})
+
+test.after(() => {
+  delete process.env.API_URL
+})
+
 test(
   'changeStartPlace action',
   actionTest(
@@ -40,7 +50,7 @@ test(
   'submitForm invalid startplace action',
   async (t) => {
     const startPlace = { id: '' }
-    const mockStore = configureStore([reduxPromise(), reduxThunk])()
+    const mockStore = storefunc()
 
     await mockStore.dispatch(Creators.submitForm(startPlace, []))
     const actions = mockStore.getActions()
@@ -49,6 +59,7 @@ test(
       error: true,
       errorMsg: 'Please enter a start place',
     }
+
     t.deepEqual(actions[0], expectedAction)
   },
 )
@@ -57,7 +68,7 @@ test(
   'submitForm invalid dropoff action',
   async (t) => {
     const startPlace = { id: '123' }
-    const mockStore = configureStore([reduxPromise(), reduxThunk])()
+    const mockStore = storefunc()
 
     await mockStore.dispatch(Creators.submitForm(startPlace, []))
     const actions = mockStore.getActions()
@@ -66,6 +77,7 @@ test(
       error: true,
       errorMsg: 'Please enter at least one dropoff',
     }
+
     t.deepEqual(actions[0], expectedAction)
   },
 )
@@ -75,7 +87,7 @@ test.serial(
   async (t) => {
     const startPlace = { id: '123' }
     const dropoffs = [{ id: '321' }]
-    const mockStore = configureStore([reduxPromise(), reduxThunk])()
+    const mockStore = storefunc()
     const mockAsk = sinon.stub(Creators, 'askForPath').returns({ type: 'MOCK_ASK' })
 
     await mockStore.dispatch(Creators.submitForm(startPlace, dropoffs))
@@ -84,6 +96,7 @@ test.serial(
       type: Types.SUBMIT_FORM,
       error: false,
     }
+
     t.is(actions.length, 2)
     t.is(actions[0].type, 'MOCK_ASK')
     t.deepEqual(actions[1], expectedAction)
@@ -100,7 +113,7 @@ test.serial(
     const startPlace = { location: { lat: 12, lng: 12 } }
     const dropoffs = [{ location: { lat: 1, lng: 133 } }]
 
-    const mockStore = configureStore([reduxPromise(), reduxThunk])()
+    const mockStore = storefunc({ pathmap: { cache: {} } })
     sinon.stub(Creators, 'getRouteByToken').returns({ type: 'MOCK_GET' })
 
     nock('http://127.0.0.1:8080')
@@ -108,8 +121,8 @@ test.serial(
       .reply(200, { token: 'abc' })
 
     await mockStore.dispatch(Creators.askForPath(startPlace, dropoffs))
-
     const actions = mockStore.getActions()
+
     t.is(actions.length, 3)
     t.is(actions[0].type, `${Types.ASK_FOR_PATH}_${PENDING}`)
     t.is(actions[1].type, 'MOCK_GET')
@@ -126,7 +139,7 @@ test.serial(
     const startPlace = { location: { lat: 12, lng: 12 } }
     const dropoffs = [{ location: { lat: 1, lng: 133 } }]
 
-    const mockStore = configureStore([reduxPromise(), reduxThunk])()
+    const mockStore = storefunc({ pathmap: { cache: {} } })
     sinon.stub(Creators, 'getRouteByToken').returns({ type: 'MOCK_GET' })
 
     nock('http://127.0.0.1:8080')
@@ -134,8 +147,8 @@ test.serial(
       .reply(500)
 
     await mockStore.dispatch(Creators.askForPath(startPlace, dropoffs))
-
     const actions = mockStore.getActions()
+
     t.is(actions.length, 2)
     t.is(actions[0].type, `${Types.ASK_FOR_PATH}_${PENDING}`)
     t.is(actions[1].type, `${Types.ASK_FOR_PATH}_${REJECTED}`)
@@ -143,3 +156,93 @@ test.serial(
     Creators.getRouteByToken.restore()
   },
 )
+
+test.serial(
+  'askForPath success with cache action',
+  async (t) => {
+    const mockStore = storefunc({ pathmap: { cache: { token: 'abc' } } })
+    const mockGet = sinon.stub(Creators, 'getRouteByToken').returns({ type: 'MOCK_GET' })
+
+    await mockStore.dispatch(Creators.askForPath())
+    const actions = mockStore.getActions()
+
+    t.is(actions.length, 1)
+    t.is(actions[0].type, 'MOCK_GET')
+    t.true(mockGet.called)
+    t.true(mockGet.calledWithExactly('abc'))
+
+    Creators.getRouteByToken.restore()
+  },
+)
+
+test.serial(
+  'getRouteByToken succcess action',
+  async (t) => {
+    const mockStore = storefunc()
+    const mockGoogleGet = sinon.stub(Creators, 'askGoogleForDrivingPath')
+      .returns({ type: 'MOCK_GOOGLE_GET' })
+
+    nock('http://127.0.0.1:8080')
+      .get('/route/abc')
+      .reply(200, { status: 'success', path: 'dummy' })
+
+    await mockStore.dispatch(Creators.getRouteByToken('abc'))
+    const actions = mockStore.getActions()
+
+    t.is(actions.length, 3)
+    t.is(actions[0].type, `${Types.GET_ROUTE_BY_TOKEN}_${PENDING}`)
+    t.is(actions[1].type, 'MOCK_GOOGLE_GET')
+    t.is(actions[2].type, `${Types.GET_ROUTE_BY_TOKEN}_${FULFILLED}`)
+    t.true(mockGoogleGet.calledWithExactly('dummy'))
+    t.deepEqual(actions[2].payload, { status: 'success', path: 'dummy' })
+
+    mockGoogleGet.restore()
+  },
+)
+
+test.serial(
+  'getRouteByToken fail action',
+  async (t) => {
+    const mockStore = storefunc()
+    const mockGoogleGet = sinon.stub(Creators, 'askGoogleForDrivingPath')
+      .returns({ type: 'MOCK_GOOGLE_GET' })
+
+    nock('http://127.0.0.1:8080')
+      .get('/route/abc')
+      .reply(500)
+
+    await mockStore.dispatch(Creators.getRouteByToken('abc'))
+    const actions = mockStore.getActions()
+
+    t.is(actions.length, 2)
+    t.is(actions[0].type, `${Types.GET_ROUTE_BY_TOKEN}_${PENDING}`)
+    t.is(actions[1].type, `${Types.GET_ROUTE_BY_TOKEN}_${REJECTED}`)
+    t.false(mockGoogleGet.called)
+
+    mockGoogleGet.restore()
+  },
+)
+
+test.serial(
+  'getRouteByToken in progress action',
+  async (t) => {
+    const mockStore = storefunc()
+    const mockGoogleGet = sinon.stub(Creators, 'askGoogleForDrivingPath')
+      .returns({ type: 'MOCK_GOOGLE_GET' })
+
+    nock('http://127.0.0.1:8080')
+      .get('/route/abc')
+      .reply(200, { status: 'in progress', path: 'dummy' })
+
+    await mockStore.dispatch(Creators.getRouteByToken('abc'))
+    const actions = mockStore.getActions()
+
+    t.is(actions.length, 2)
+    t.is(actions[0].type, `${Types.GET_ROUTE_BY_TOKEN}_${PENDING}`)
+    t.is(actions[1].type, `${Types.GET_ROUTE_BY_TOKEN}_${FULFILLED}`)
+    t.false(mockGoogleGet.called)
+
+    mockGoogleGet.restore()
+  },
+)
+

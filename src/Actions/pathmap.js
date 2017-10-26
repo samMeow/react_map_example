@@ -27,7 +27,12 @@ const { Types, Creators } = createActions({
       dispatch({ type: 'SUBMIT_FORM', error: false })
     },
   askForPath: (startPlace, dropoffs) =>
-    (dispatch) => {
+    (dispatch, getState) => {
+      const { pathmap: { cache } } = getState()
+      if (cache.token) {
+        return dispatch(Creators.getRouteByToken(cache.token))
+      }
+
       const { location } = startPlace
       const dropoffsLocation = dropoffs.map(dropoff => dropoff.location)
       const path = [location, ...dropoffsLocation].map(({ lat, lng }) => ([lat, lng]))
@@ -36,16 +41,30 @@ const { Types, Creators } = createActions({
         type: 'ASK_FOR_PATH',
         payload: routeApi.postRouteData(path).then((res) => {
           if (res.status !== 200) {
-            throw Error(res)
+            throw Error('ASK_FOR_PATH Fail')
           }
           dispatch(Creators.getRouteByToken(res.token))
           return res.data
         }),
       }).catch(err => err)
     },
-  getRouteByToken: token => ({
-    type: 'GET_ROUTE_BY_TOKEN',
-    payload: routeApi.getRouteDetail(token),
+  getRouteByToken: token =>
+    dispatch => dispatch({
+      type: 'GET_ROUTE_BY_TOKEN',
+      payload: routeApi.getRouteDetail(token).then((res) => {
+        if (res.status !== 200) {
+          throw new Error('GET_ROUTE_BY_TOKEN Fail')
+        }
+
+        if (res.data.status === 'success') {
+          dispatch(Creators.askGoogleForDrivingPath(res.data.path))
+        }
+        return res.data
+      }),
+    }).catch(err => err),
+  askGoogleForDrivingPath: path => ({
+    type: 'ASK_GOOGLE_FOR_DRIVING_PATH',
+    payload: new Promise(resolve => resolve(path)),
   }),
 })
 

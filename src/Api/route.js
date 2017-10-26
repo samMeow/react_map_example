@@ -1,15 +1,18 @@
+// @flow
+/* global process */
 import { create } from 'apisauce'
 
-const api = create({
-  // Hardcode API address
-  baseURL: 'http://127.0.0.1:8080',
+type GeoLocation = [number, number];
+
+const api = () => create({
+  baseURL: process.env.API_URL,
 })
 
-const postRouteData = data =>
-  api.post('/route', data)
+const postRouteData = (data: Array<GeoLocation>) =>
+  api().post('/route', data)
 
-const getRouteDetail = token =>
-  api.get(`/route/${token}`)
+const getRouteDetail = (token: string) =>
+  api().get(`/route/${token}`)
 
 export default {
   postRouteData,
