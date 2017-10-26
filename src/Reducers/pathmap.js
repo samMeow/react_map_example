@@ -14,6 +14,9 @@ export const INIT_STATE = {
     },
   },
   dropoffs: [],
+  requesting: false,
+  error: false,
+  errorMsg: '',
 }
 
 // ====== reducer ======
@@ -37,11 +40,18 @@ const removeDropoff = (state, { id }) => {
   }
 }
 
+const submitForm = (state, { error, errorMsg }) => ({
+  ...state,
+  error,
+  errorMsg: errorMsg || state.errorMsg,
+})
+
 const Handlers = createReducer(INIT_STATE, {
   RESET: reset,
   [pathmapTypes.CHANGE_START_PLACE]: changeStartPlace,
   [pathmapTypes.ADD_DROPOFF]: addDropoff,
   [pathmapTypes.REMOVE_DROPOFF]: removeDropoff,
+  [pathmapTypes.SUBMIT_FORM]: submitForm,
 })
 
 export default Handlers

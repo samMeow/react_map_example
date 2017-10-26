@@ -1,7 +1,7 @@
 import test from 'ava'
 import { reducerTest } from 'redux-ava'
 
-import { Creators } from 'Actions/pathmap'
+import { Creators, Types } from 'Actions/pathmap'
 import Handlers from '../pathmap'
 
 
@@ -39,5 +39,25 @@ test(
     { dropoffs: [{ id: 'a' }, { id: 'b' }] },
     Creators.removeDropoff('a'),
     { dropoffs: [{ id: 'b' }] },
+  ),
+)
+
+test(
+  'submitForm with error reduce',
+  reducerTest(
+    Handlers,
+    { error: false, errorMsg: '' },
+    { type: Types.SUBMIT_FORM, error: true, errorMsg: 'Hello' },
+    { error: true, errorMsg: 'Hello' },
+  ),
+)
+
+test(
+  'submitForm success reduce',
+  reducerTest(
+    Handlers,
+    { error: false, errorMsg: '' },
+    { type: Types.SUBMIT_FORM, error: false },
+    { error: false, errorMsg: '' },
   ),
 )

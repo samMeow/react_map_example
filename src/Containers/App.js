@@ -18,13 +18,24 @@ class App extends Component {
       removeDropoff: PropTypes.func.isRequired,
       changeStartPlace: PropTypes.func.isRequired,
       reset: PropTypes.func.isRequired,
+      submitForm: PropTypes.func.isRequired,
     }).isRequired,
     startPlace: PlaceType.isRequired,
     dropoffs: PropTypes.arrayOf(PlaceType).isRequired,
+    requesting: PropTypes.bool.isRequired,
+    error: PropTypes.bool.isRequired,
+    errorMsg: PropTypes.string.isRequired,
   }
 
   render() {
-    const { startPlace, dropoffs, actions } = this.props
+    const {
+      startPlace,
+      dropoffs,
+      actions,
+      requesting,
+      error,
+      errorMsg,
+    } = this.props
     return (
       <div className="grid-x">
         <h1 className="small-12 text-center">React Map Demo</h1>
@@ -32,11 +43,15 @@ class App extends Component {
           <LocationForm
             startPlace={startPlace}
             dropoffs={dropoffs}
+            requesting={requesting}
+            error={error}
+            errorMsg={errorMsg}
             actions={{
               addDropoff: actions.addDropoff,
               removeDropoff: actions.removeDropoff,
               changeStartPlace: actions.changeStartPlace,
               reset: actions.reset,
+              submitForm: actions.submitForm,
             }}
           />
         </div>
@@ -54,6 +69,9 @@ class App extends Component {
 const mapStateToProps = state => ({
   startPlace: state.pathmap.startPlace,
   dropoffs: state.pathmap.dropoffs,
+  requesting: state.pathmap.requesting,
+  error: state.pathmap.error,
+  errorMsg: state.pathmap.errorMsg,
 })
 
 const mapDispathToProps = dispath => ({
@@ -62,6 +80,7 @@ const mapDispathToProps = dispath => ({
     addDropoff: pathMapActions.addDropoff,
     removeDropoff: pathMapActions.removeDropoff,
     reset: pathMapActions.reset,
+    submitForm: pathMapActions.submitForm,
   }, dispath),
 })
 

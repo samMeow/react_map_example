@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import classnames from 'classnames'
 
 import { PlaceType } from 'Constants/proptypes'
 
@@ -15,13 +16,19 @@ export default class LocationForm extends Component {
       removeDropoff: PropTypes.func.isRequired,
       changeStartPlace: PropTypes.func.isRequired,
       reset: PropTypes.func.isRequired,
+      submitForm: PropTypes.func.isRequired,
     }).isRequired,
     startPlace: PlaceType.isRequired,
     dropoffs: PropTypes.arrayOf(PlaceType).isRequired,
+    requesting: PropTypes.bool.isRequired,
+    error: PropTypes.bool.isRequired,
+    errorMsg: PropTypes.string.isRequired,
   }
 
   onSubmit = (e) => {
     e.preventDefault()
+    const { actions, startPlace, dropoffs } = this.props
+    actions.submitForm(startPlace, dropoffs)
   }
 
   onStartPointChange = (place) => {
@@ -40,10 +47,20 @@ export default class LocationForm extends Component {
   }
 
   render() {
-    const { startPlace, dropoffs, actions } = this.props
+    const {
+      startPlace,
+      dropoffs,
+      actions,
+      error,
+      requesting,
+      errorMsg,
+    } = this.props
     return (
       <div>
-        <form className="location-form grid-x align-center" onSubmit={this.onSubmit}>
+        <form
+          className={classnames('location-form', 'grid-x align-center', { error })}
+          onSubmit={this.onSubmit}
+        >
           <div className="small-6 large-12">
             <LocationInput
               title="Start"
@@ -58,17 +75,20 @@ export default class LocationForm extends Component {
               onChange={this.onDropPointChange}
             />
           </div>
+          <span className="error-message">{errorMsg}</span>
           <div className="grid-x small-12 medium-6 large-12 text-center">
             <button
               type="button"
               className="button alert small-6"
               onClick={this.onResetBtnClick}
+              disabled={requesting}
             >
               Reset
             </button>
             <button
               type="submit"
               className="button small-6"
+              disabled={requesting}
             >
               Search
             </button>
