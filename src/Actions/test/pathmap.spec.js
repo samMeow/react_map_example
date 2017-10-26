@@ -2,8 +2,9 @@ import test from 'ava'
 import { actionTest } from 'redux-ava'
 import configureStore from 'redux-mock-store'
 import reduxThunk from 'redux-thunk'
-import reduxPromise, { PENDING, FULFILLED } from 'redux-promise-middleware'
+import reduxPromise, { PENDING, FULFILLED, REJECTED } from 'redux-promise-middleware'
 import sinon from 'sinon'
+import nock from 'nock'
 
 import { Types, Creators } from '../pathmap'
 
@@ -33,27 +34,6 @@ test(
     'abc',
     { type: Types.REMOVE_DROPOFF, id: 'abc' },
   ),
-)
-
-test(
-  'askForPath action',
-  async (t) => {
-    t.plan(3)
-    const startPlace = {
-      location: { lat: 1, lng: 2 },
-    }
-    const dropoffs = [
-      { location: { lat: 112, lng: 223 } },
-    ]
-    const mockStore = configureStore([reduxPromise(), reduxThunk])()
-
-    await mockStore.dispatch(Creators.askForPath(startPlace, dropoffs))
-
-    const actions = mockStore.getActions()
-    t.is(actions.length, 2)
-    t.is(actions[0].type, `${Types.ASK_FOR_PATH}_${PENDING}`)
-    t.is(actions[1].type, `${Types.ASK_FOR_PATH}_${FULFILLED}`)
-  },
 )
 
 test(
@@ -90,7 +70,7 @@ test(
   },
 )
 
-test(
+test.serial(
   'submitForm success action',
   async (t) => {
     const startPlace = { id: '123' }
@@ -111,5 +91,55 @@ test(
     t.true(mockAsk.calledWithExactly(startPlace, dropoffs))
 
     Creators.askForPath.restore()
+  },
+)
+
+test.serial(
+  'askForPath success action',
+  async (t) => {
+    const startPlace = { location: { lat: 12, lng: 12 } }
+    const dropoffs = [{ location: { lat: 1, lng: 133 } }]
+
+    const mockStore = configureStore([reduxPromise(), reduxThunk])()
+    sinon.stub(Creators, 'getRouteByToken').returns({ type: 'MOCK_GET' })
+
+    nock('http://127.0.0.1:8080')
+      .post('/route')
+      .reply(200, { token: 'abc' })
+
+    await mockStore.dispatch(Creators.askForPath(startPlace, dropoffs))
+
+    const actions = mockStore.getActions()
+    t.is(actions.length, 3)
+    t.is(actions[0].type, `${Types.ASK_FOR_PATH}_${PENDING}`)
+    t.is(actions[1].type, 'MOCK_GET')
+    t.is(actions[2].type, `${Types.ASK_FOR_PATH}_${FULFILLED}`)
+    t.deepEqual(actions[2].payload, { token: 'abc' })
+
+    Creators.getRouteByToken.restore()
+  },
+)
+
+test.serial(
+  'askForPath fail response action',
+  async (t) => {
+    const startPlace = { location: { lat: 12, lng: 12 } }
+    const dropoffs = [{ location: { lat: 1, lng: 133 } }]
+
+    const mockStore = configureStore([reduxPromise(), reduxThunk])()
+    sinon.stub(Creators, 'getRouteByToken').returns({ type: 'MOCK_GET' })
+
+    nock('http://127.0.0.1:8080')
+      .post('/route')
+      .reply(500)
+
+    await mockStore.dispatch(Creators.askForPath(startPlace, dropoffs))
+
+    const actions = mockStore.getActions()
+    t.is(actions.length, 2)
+    t.is(actions[0].type, `${Types.ASK_FOR_PATH}_${PENDING}`)
+    t.is(actions[1].type, `${Types.ASK_FOR_PATH}_${REJECTED}`)
+
+    Creators.getRouteByToken.restore()
   },
 )

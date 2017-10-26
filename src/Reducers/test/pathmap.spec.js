@@ -1,5 +1,6 @@
 import test from 'ava'
 import { reducerTest } from 'redux-ava'
+import { PENDING, FULFILLED, REJECTED } from 'redux-promise-middleware'
 
 import { Creators, Types } from 'Actions/pathmap'
 import Handlers from '../pathmap'
@@ -59,5 +60,39 @@ test(
     { error: false, errorMsg: '' },
     { type: Types.SUBMIT_FORM, error: false },
     { error: false, errorMsg: '' },
+  ),
+)
+
+test(
+  'askForPathPending reduce',
+  reducerTest(
+    Handlers,
+    { requesting: false },
+    { type: `${Types.ASK_FOR_PATH}_${PENDING}` },
+    { requesting: true },
+  ),
+)
+
+test(
+  'askForPathSuccess reduce',
+  reducerTest(
+    Handlers,
+    { requesting: true },
+    { type: `${Types.ASK_FOR_PATH}_${FULFILLED}`, payload: { token: 'abc' } },
+    { requesting: false, token: 'abc' },
+  ),
+)
+
+test(
+  'askForPathError reduce',
+  reducerTest(
+    Handlers,
+    { requesting: true },
+    { type: `${Types.ASK_FOR_PATH}_${REJECTED}` },
+    {
+      requesting: false,
+      error: true,
+      errorMsg: 'An unexpected error occur. Please try again later',
+    },
   ),
 )

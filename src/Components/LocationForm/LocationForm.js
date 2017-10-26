@@ -98,6 +98,7 @@ export default class LocationForm extends Component {
           startPlace={startPlace}
           dropoffs={dropoffs}
           removeDropoff={actions.removeDropoff}
+          requesting={requesting}
         />
       </div>
     )

@@ -10,6 +10,7 @@ export default class LocationList extends Component {
     removeDropoff: PropTypes.func.isRequired,
     startPlace: PlaceType.isRequired,
     dropoffs: PropTypes.arrayOf(PlaceType).isRequired,
+    requesting: PropTypes.bool.isRequired,
   }
 
   onCrossClick = id => () => {
@@ -18,18 +19,16 @@ export default class LocationList extends Component {
   }
 
   renderDropOffList = () => {
-    const { dropoffs } = this.props
+    const { dropoffs, requesting } = this.props
     return (
       <ul className="location-list-block-dropoff-list">
         {dropoffs.map(({ id, name }) =>
           (
             <li key={id} className="location-list-block-dropoff-list-item">
-              <i
+              <button
                 className="cross-icon"
                 onClick={this.onCrossClick(id)}
-                role="button"
-                tabIndex="-1"
-                onKeyPress={this.onCrossClick(id)}
+                disabled={requesting}
               />
               <span>{name}</span>
             </li>
