@@ -2,6 +2,7 @@
 import { createActions } from 'reduxsauce'
 
 import routeApi from 'Api/route'
+import googleMapApi from 'Api/googlemap'
 
 // ======== action =======
 const { Types, Creators } = createActions({
@@ -64,7 +65,7 @@ const { Types, Creators } = createActions({
     }).catch(err => err),
   askGoogleForDrivingPath: path => ({
     type: 'ASK_GOOGLE_FOR_DRIVING_PATH',
-    payload: new Promise(resolve => resolve(path)),
+    payload: googleMapApi.getDrivingPath(path),
   }),
 })
 

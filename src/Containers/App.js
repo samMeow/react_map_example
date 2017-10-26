@@ -25,6 +25,7 @@ class App extends Component {
     requesting: PropTypes.bool.isRequired,
     error: PropTypes.bool.isRequired,
     errorMsg: PropTypes.string.isRequired,
+    drivePath: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
   }
 
   render() {
@@ -35,6 +36,7 @@ class App extends Component {
       requesting,
       error,
       errorMsg,
+      drivePath,
     } = this.props
     return (
       <div className="grid-x">
@@ -57,7 +59,7 @@ class App extends Component {
         </div>
         <div className="small-12 medium-12 large-9">
           <PathMap
-            path={[]}
+            path={drivePath}
             places={[startPlace, ...dropoffs]}
           />
         </div>
@@ -72,6 +74,7 @@ const mapStateToProps = state => ({
   requesting: state.pathmap.requesting,
   error: state.pathmap.error,
   errorMsg: state.pathmap.errorMsg,
+  drivePath: state.pathmap.drivePath,
 })
 
 const mapDispathToProps = dispath => ({

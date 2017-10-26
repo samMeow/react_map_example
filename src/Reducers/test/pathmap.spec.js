@@ -107,7 +107,7 @@ test(
       payload: { status: 'success', path: '123' },
     },
     {
-      requesting: false,
+      requesting: true,
       cache: {
         path: '123',
       },
@@ -162,3 +162,39 @@ test(
     },
   ),
 )
+
+test(
+  'askGoogleForDrivingPathSuccess',
+  reducerTest(
+    Handlers,
+    { requesting: true },
+    {
+      type: `${Types.ASK_GOOGLE_FOR_DRIVING_PATH}_${FULFILLED}`,
+      payload: {
+        path: '123',
+      },
+    },
+    {
+      requesting: false,
+      drivePath: {
+        path: '123',
+      },
+    },
+  ),
+)
+
+
+test(
+  'askGoogleForDrivingPathError reduce',
+  reducerTest(
+    Handlers,
+    { requesting: true },
+    { type: `${Types.ASK_GOOGLE_FOR_DRIVING_PATH}_${REJECTED}` },
+    {
+      requesting: false,
+      error: true,
+      errorMsg: 'An unexpected error occur. Please try again later',
+    },
+  ),
+)
+

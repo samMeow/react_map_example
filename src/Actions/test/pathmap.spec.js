@@ -6,6 +6,7 @@ import reduxPromise, { PENDING, FULFILLED, REJECTED } from 'redux-promise-middle
 import sinon from 'sinon'
 import nock from 'nock'
 
+import googleMapApi from 'Api/googlemap'
 import { Types, Creators } from '../pathmap'
 
 const storefunc = configureStore([reduxPromise(), reduxThunk])
@@ -116,7 +117,7 @@ test.serial(
     const mockStore = storefunc({ pathmap: { cache: {} } })
     sinon.stub(Creators, 'getRouteByToken').returns({ type: 'MOCK_GET' })
 
-    nock('http://127.0.0.1:8080')
+    nock(process.env.API_URL)
       .post('/route')
       .reply(200, { token: 'abc' })
 
@@ -142,7 +143,7 @@ test.serial(
     const mockStore = storefunc({ pathmap: { cache: {} } })
     sinon.stub(Creators, 'getRouteByToken').returns({ type: 'MOCK_GET' })
 
-    nock('http://127.0.0.1:8080')
+    nock(process.env.API_URL)
       .post('/route')
       .reply(500)
 
@@ -182,7 +183,7 @@ test.serial(
     const mockGoogleGet = sinon.stub(Creators, 'askGoogleForDrivingPath')
       .returns({ type: 'MOCK_GOOGLE_GET' })
 
-    nock('http://127.0.0.1:8080')
+    nock(process.env.API_URL)
       .get('/route/abc')
       .reply(200, { status: 'success', path: 'dummy' })
 
@@ -207,7 +208,7 @@ test.serial(
     const mockGoogleGet = sinon.stub(Creators, 'askGoogleForDrivingPath')
       .returns({ type: 'MOCK_GOOGLE_GET' })
 
-    nock('http://127.0.0.1:8080')
+    nock(process.env.API_URL)
       .get('/route/abc')
       .reply(500)
 
@@ -230,7 +231,7 @@ test.serial(
     const mockGoogleGet = sinon.stub(Creators, 'askGoogleForDrivingPath')
       .returns({ type: 'MOCK_GOOGLE_GET' })
 
-    nock('http://127.0.0.1:8080')
+    nock(process.env.API_URL)
       .get('/route/abc')
       .reply(200, { status: 'in progress', path: 'dummy' })
 
@@ -246,3 +247,48 @@ test.serial(
   },
 )
 
+test.serial(
+  'askGoogleForDrivingPath success action',
+  async (t) => {
+    const path = [
+      [1, 2],
+      [2, 3],
+    ]
+    const mockStore = storefunc()
+    const mockgoogleApi = sinon.stub(googleMapApi, 'getDrivingPath')
+      .resolves('success')
+
+    await mockStore.dispatch(Creators.askGoogleForDrivingPath(path))
+    const actions = mockStore.getActions()
+
+    t.is(actions.length, 2)
+    t.is(actions[0].type, `${Types.ASK_GOOGLE_FOR_DRIVING_PATH}_${PENDING}`)
+    t.is(actions[1].type, `${Types.ASK_GOOGLE_FOR_DRIVING_PATH}_${FULFILLED}`)
+    t.true(mockgoogleApi.calledWithMatch(path))
+
+    mockgoogleApi.restore()
+  },
+)
+
+test.serial(
+  'askGoogleForDrivingPath error action',
+  async (t) => {
+    const path = [
+      [1, 2],
+      [2, 3],
+    ]
+    const mockStore = storefunc()
+    const mockgoogleApi = sinon.stub(googleMapApi, 'getDrivingPath')
+      .rejects()
+
+    await mockStore.dispatch(Creators.askGoogleForDrivingPath(path)).catch(err => err)
+    const actions = mockStore.getActions()
+
+    t.is(actions.length, 2)
+    t.is(actions[0].type, `${Types.ASK_GOOGLE_FOR_DRIVING_PATH}_${PENDING}`)
+    t.is(actions[1].type, `${Types.ASK_GOOGLE_FOR_DRIVING_PATH}_${REJECTED}`)
+    t.true(mockgoogleApi.calledWithMatch(path))
+
+    mockgoogleApi.restore()
+  },
+)

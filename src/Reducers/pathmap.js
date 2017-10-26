@@ -21,6 +21,7 @@ export const INIT_STATE = {
   cache: {
     token: null,
   },
+  drivePath: {},
 }
 
 // ====== reducer ======
@@ -77,8 +78,7 @@ const getRouteByTokenSuccess = (state, { payload }) => {
   let newState = {}
   switch (status) {
   case 'success':
-    newState = { // TODO: should be still requesting until draw map
-      requesting: false,
+    newState = {
       cache: { ...state.cache, path: payload.path },
     }
     break
@@ -109,6 +109,19 @@ const getRouteByTokenError = state => ({
   errorMsg: 'An unexpected error occur. Please try again later',
 })
 
+const askGoogleForDrivingPathSuccess = (state, { payload }) => ({
+  ...state,
+  requesting: false,
+  drivePath: payload,
+})
+
+const askGoogleForDrivingPathError = state => ({
+  ...state,
+  requesting: false,
+  error: true,
+  errorMsg: 'An unexpected error occur. Please try again later',
+})
+
 const Handlers = createReducer(INIT_STATE, {
   RESET: reset,
   [pathmapTypes.CHANGE_START_PLACE]: changeStartPlace,
@@ -120,6 +133,8 @@ const Handlers = createReducer(INIT_STATE, {
   [`${pathmapTypes.ASK_FOR_PATH}_${REJECTED}`]: askForPathError,
   [`${pathmapTypes.GET_ROUTE_BY_TOKEN}_${FULFILLED}`]: getRouteByTokenSuccess,
   [`${pathmapTypes.GET_ROUTE_BY_TOKEN}_${REJECTED}`]: getRouteByTokenError,
+  [`${pathmapTypes.ASK_GOOGLE_FOR_DRIVING_PATH}_${FULFILLED}`]: askGoogleForDrivingPathSuccess,
+  [`${pathmapTypes.ASK_GOOGLE_FOR_DRIVING_PATH}_${REJECTED}`]: askGoogleForDrivingPathError,
 })
 
 export default Handlers
