@@ -30,7 +30,6 @@ class LocationInput extends PureComponent {
 
   onSearchBoxMounted = (ref) => {
     this.searchBoxRef = ref
-    
   }
 
   onInputMount = (ref) => {
@@ -40,7 +39,6 @@ class LocationInput extends PureComponent {
   onPlaceChange = () => {
     const { onChange } = this.props
     const places = this.searchBoxRef.getPlaces()
-    console.log(this.searchBoxRef.getBounds())
     if (this.validate(places)) {
       const {
         formatted_address,
