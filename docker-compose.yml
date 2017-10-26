@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+  mockapi:
+    build: ./mockapi
+    ports:
+    - "8080:8080"
