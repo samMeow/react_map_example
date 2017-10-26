@@ -1,0 +1,21 @@
+{
+    "presets": [
+      "es2015",
+      "stage-2",
+      "react",
+      "flow"
+    ],
+    "env": {
+      "test": {
+        "plugins": [
+          [
+            "babel-plugin-webpack-loaders",
+            {
+              "config": "${CONFIG}",
+              "verbose": false
+            }
+          ]
+        ]
+      }
+    }
+  }
