@@ -16,7 +16,7 @@ Install needed package for the first time
 yarn install
 ```
 
-Starting main app
+Starting main app Visit at 127.0.0.1:8000
 ```sh
 npm start
 ```
@@ -45,4 +45,10 @@ For runing test case
 ```sh
 npm run test
 ```
+
+## Reserved ports
+| Port | Usage    |
+|------|----------|
+| 8080 | main app |
+| 8000 | mockapi  |
 
