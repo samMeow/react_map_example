@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Marker, DirectionsRenderer } from 'react-google-maps'
+import classnames from 'classnames'
 
 import { GeoLocationType } from 'Constants/proptypes'
 
 import MapComponent from './components/MapComponent'
+
+import './PathMap.less'
 
 export default class PathMap extends Component {
   static propTypes = {
@@ -14,6 +17,7 @@ export default class PathMap extends Component {
     })).isRequired,
     path: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
     center: GeoLocationType.isRequired,
+    requesting: PropTypes.bool.isRequired,
   }
 
   renderPath = () => {
@@ -32,14 +36,21 @@ export default class PathMap extends Component {
   }
 
   render() {
-    const { center } = this.props
+    const { center, requesting } = this.props
     return (
-      <MapComponent
-        center={center}
-      >
-        {this.renderMarker()}
-        {this.renderPath()}
-      </MapComponent>
+      <div className="map-section">
+        <MapComponent
+          center={center}
+        >
+          {this.renderMarker()}
+          {this.renderPath()}
+        </MapComponent>
+        <div className={classnames('loading-section', { show: requesting })}>
+          <div className="loading-content">
+            <img src="/img/loading.gif" alt="loading" />
+          </div>
+        </div>
+      </div>
     )
   }
 }

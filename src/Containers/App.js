@@ -64,6 +64,7 @@ class App extends Component {
             path={drivePath}
             places={[startPlace, ...dropoffs]}
             center={center}
+            requesting={requesting}
           />
         </div>
       </div>
