@@ -58,40 +58,43 @@ export default class LocationForm extends Component {
     return (
       <div>
         <form
-          className={classnames('location-form', 'grid-x align-center', { error })}
+          className={classnames('location-form', { error })}
           onSubmit={this.onSubmit}
         >
-          <div className="small-6 large-12">
-            <LocationInput
-              title="Start"
-              name="start"
-              onChange={this.onStartPointChange}
-            />
-          </div>
-          <div className="small-6 large-12">
-            <LocationInput
-              title="Drop-off"
-              name="dropoff"
-              onChange={this.onDropPointChange}
-            />
-          </div>
-          <span className="error-message">{errorMsg}</span>
-          <div className="grid-x small-12 medium-6 large-12 text-center">
-            <button
-              type="button"
-              className="button alert small-6"
-              onClick={this.onResetBtnClick}
-              disabled={requesting}
-            >
-              Reset
-            </button>
-            <button
-              type="submit"
-              className="button small-6"
-              disabled={requesting}
-            >
-              Search
-            </button>
+          <h3 className="location-form-title">Search Panel</h3>
+          <div className="location-form-content grid-x align-center">
+            <div className="small-6 large-12">
+              <LocationInput
+                title="Start"
+                name="start"
+                onChange={this.onStartPointChange}
+              />
+            </div>
+            <div className="small-6 large-12">
+              <LocationInput
+                title="Drop-off"
+                name="dropoff"
+                onChange={this.onDropPointChange}
+              />
+            </div>
+            <span className="small-12 general-error-message">{errorMsg}</span>
+            <div className="grid-x small-12 medium-6 large-12 text-center">
+              <button
+                type="button"
+                className="button alert small-6"
+                onClick={this.onResetBtnClick}
+                disabled={requesting}
+              >
+                Reset
+              </button>
+              <button
+                type="submit"
+                className="button small-6"
+                disabled={requesting}
+              >
+                Search
+              </button>
+            </div>
           </div>
         </form>
         <LocationList

@@ -2,6 +2,9 @@
 
 .location-form {
   margin: 20px 40px;
+  border: 1px solid grey;
+  border-radius: 5px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
 
   @media @mobile {
     & {
@@ -9,13 +12,32 @@
     }
   }
 
-  .error-message {
+  .location-form-title {
+    background-color: #f5f5f5;
+    width: 100%;
+    text-align: center;
+    border-bottom: 1px solid grey;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    margin: 0;
+  }
+
+  .location-form-content {
+    padding: 0 15px;
+  }
+
+  .general-error-message {
     color: red;
     font-size: 14px;
     display: none;
+    text-align: center;
   }
 
-  &.error > .error-message {
+  &.error {
+    border-color: red;
+  }
+
+  &.error .general-error-message {
     display: block;
   }
 }
