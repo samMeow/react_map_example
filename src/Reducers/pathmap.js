@@ -3,6 +3,8 @@ import { createReducer } from 'reduxsauce'
 import { Types as pathmapTypes } from 'Actions/pathmap'
 import { PENDING, FULFILLED, REJECTED } from 'redux-promise-middleware'
 
+import { HongKongLocaction } from 'Constants/googlemap'
+
 
 export const INIT_STATE = {
   startPlace: {
@@ -22,6 +24,7 @@ export const INIT_STATE = {
     token: null,
   },
   drivePath: {},
+  center: HongKongLocaction,
 }
 
 // ====== reducer ======
@@ -31,12 +34,14 @@ const changeStartPlace = (state, { place }) => ({
   ...state,
   startPlace: place,
   cache: {},
+  center: place.location,
 })
 
 const addDropoff = (state, { place }) => ({
   ...state,
   dropoffs: [...state.dropoffs, place],
   cache: {},
+  center: place.location,
 })
 
 const removeDropoff = (state, { id }) => {

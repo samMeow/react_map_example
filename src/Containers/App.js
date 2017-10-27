@@ -9,7 +9,7 @@ import LocationForm from 'Components/LocationForm/LocationForm'
 
 import { Creators as pathMapActions } from 'Actions/pathmap'
 
-import { PlaceType } from 'Constants/proptypes'
+import { PlaceType, GeoLocationType } from 'Constants/proptypes'
 
 class App extends Component {
   static propTypes = {
@@ -26,6 +26,7 @@ class App extends Component {
     error: PropTypes.bool.isRequired,
     errorMsg: PropTypes.string.isRequired,
     drivePath: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
+    center: GeoLocationType.isRequired,
   }
 
   render() {
@@ -37,6 +38,7 @@ class App extends Component {
       error,
       errorMsg,
       drivePath,
+      center,
     } = this.props
     return (
       <div className="grid-x">
@@ -61,6 +63,7 @@ class App extends Component {
           <PathMap
             path={drivePath}
             places={[startPlace, ...dropoffs]}
+            center={center}
           />
         </div>
       </div>
@@ -75,6 +78,7 @@ const mapStateToProps = state => ({
   error: state.pathmap.error,
   errorMsg: state.pathmap.errorMsg,
   drivePath: state.pathmap.drivePath,
+  center: state.pathmap.center,
 })
 
 const mapDispathToProps = dispath => ({

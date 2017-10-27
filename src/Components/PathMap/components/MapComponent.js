@@ -21,7 +21,7 @@ class MapComponent extends Component {
   }
 
   static defaultProps = {
-    defaultZoom: 11,
+    defaultZoom: 13,
     defaultCenter: HongKongLocaction,
     children: (<div />),
   }

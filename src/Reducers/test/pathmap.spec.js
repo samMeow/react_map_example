@@ -19,7 +19,7 @@ test(
     Handlers,
     { },
     Creators.changeStartPlace(mockPlace),
-    { startPlace: mockPlace, cache: {} },
+    { startPlace: mockPlace, cache: {}, center: { lat: 123, lng: 33 } },
   ),
 )
 
@@ -29,7 +29,7 @@ test(
     Handlers,
     { dropoffs: [] },
     Creators.addDropoff(mockPlace),
-    { dropoffs: [mockPlace], cache: {} },
+    { dropoffs: [mockPlace], cache: {}, center: { lat: 123, lng: 33 } },
   ),
 )
 

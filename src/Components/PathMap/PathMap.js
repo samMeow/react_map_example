@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { Marker, DirectionsRenderer } from 'react-google-maps'
 
 import { GeoLocationType } from 'Constants/proptypes'
-import { HongKongLocaction } from 'Constants/googlemap'
 
 import MapComponent from './components/MapComponent'
 
@@ -14,6 +13,7 @@ export default class PathMap extends Component {
       location: GeoLocationType.isRequired,
     })).isRequired,
     path: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
+    center: GeoLocationType.isRequired,
   }
 
   renderPath = () => {
@@ -32,9 +32,10 @@ export default class PathMap extends Component {
   }
 
   render() {
+    const { center } = this.props
     return (
       <MapComponent
-        center={HongKongLocaction}
+        center={center}
       >
         {this.renderMarker()}
         {this.renderPath()}
