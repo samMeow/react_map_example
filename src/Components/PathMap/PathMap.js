@@ -29,7 +29,13 @@ export default class PathMap extends Component {
   }
 
   renderMarker = () => {
-    const { places } = this.props
+    const { places, path } = this.props
+    if (path.routes) {
+      // TODO: As mockapi return hardcode route
+      // so to retain consistance dont't display marker
+      return (<div />)
+    }
+
     return places.map(({ location, id }) => (
       <Marker key={id} position={location} />
     ))
