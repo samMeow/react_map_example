@@ -11,7 +11,7 @@ const convertWayPoint = (geo: GeoLocation) =>
 const getDrivingPath = (path: Array<GeoLocation>) => (
   new Promise((resolve, reject) => {
     if (path.length < 2) {
-      reject(new Error('Invalid way points'))
+      reject(new Error('Invalid waypoints'))
     }
 
     const DirectionsService = new google.maps.DirectionsService()
